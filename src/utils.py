@@ -6,7 +6,9 @@ import dill
 
 from src.logger import logging
 from src.exception import CustomException
+
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
 
 def save_object(file_path, object):
     '''
@@ -22,7 +24,7 @@ def save_object(file_path, object):
     except Exception as e:
         raise CustomException(e, sys)
     
-def evaluate_models(x_train, y_train, x_test, y_test, models):
+def evaluate_models(x_train, y_train, x_test, y_test, models, params):
     try:
         '''
             this function perform model training and return r2_score of all models
@@ -31,6 +33,13 @@ def evaluate_models(x_train, y_train, x_test, y_test, models):
 
         for i in range(len(list(models))):
             model = list(models.values())[i]
+            param = params[list(models.keys())[i]]
+
+            # initializing GridSearchCV object for performing hyperparameter tuning
+            # for performing hyperparameter tuning uncomment below 3 lines
+            # grid = GridSearchCV(model, param, cv = 3)
+            # grid.fit(x_train, y_train)
+            # model.set_params(**grid.best_params_)
 
             model.fit(x_train, y_train)
 
