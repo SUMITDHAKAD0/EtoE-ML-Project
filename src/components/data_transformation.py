@@ -23,9 +23,11 @@ class DataTransformation:
     
     def get_data_transformer_object(self):
         try:
+            # initializing numeric and categorical columns in a list
             numerical_features = ['math_score', 'reading_score', 'writing_score']
             categorical_features = ['gender', 'race_ethnicity', 'parental_level_of_education', 'lunch', 'test_preparation_course']
 
+            # creating pipeline for numeric coluns
             num_pipeline = Pipeline(
                 steps = [
                 ('imputer', SimpleImputer(strategy='median')),
@@ -34,7 +36,8 @@ class DataTransformation:
             )
 
             logging.info('Numerical column scalling done')
-
+            
+            # creating pipeline for categorical coluns
             cat_pipeline = Pipeline(
                 steps = [
                 ('imputer', SimpleImputer(strategy='most_frequent')),
@@ -47,6 +50,7 @@ class DataTransformation:
             logging.info(f'Categorical columns : {categorical_features}')
             logging.info(f'Numerical columns : {numerical_features}')
 
+            # combining numeric and categorical pipeline usng ColumnTransformer
             preprocessor = ColumnTransformer(
                 [
                 ('num_pipeline', num_pipeline, numerical_features),
@@ -56,6 +60,7 @@ class DataTransformation:
 
             logging.info('ColumnTransformation done')
 
+            #returning ColumnTransformer object
             return preprocessor
 
         except Exception as e:
@@ -63,13 +68,18 @@ class DataTransformation:
 
     def initiate_data_transformation(self, train_path, test_path):
         try:
+            logging.info('Starting Data Transformation')
+
+            # reading train and test data from directry
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
 
-            logging.info('train and test data loades done')
-
+            logging.info('train and test data loading done')
+            
+            # calling get_data_transformer_object function that return preprocessor object
             preprocessor_obj = self.get_data_transformer_object()
 
+            # initializing target column
             target_column = 'target'
 
             x_train = train_df.drop(target_column, axis=1)
@@ -80,6 +90,7 @@ class DataTransformation:
 
             logging.info('Train Test spliting Done')
 
+            # performing data transformation on x_train and x_test
             x_train_preproccesed = preprocessor_obj.fit_transform(x_train)
             x_test_preproccesed = preprocessor_obj.fit_transform(x_test)
 
@@ -88,11 +99,14 @@ class DataTransformation:
 
             logging.info('Data Transformation done')
 
+            # saving preprocessor object in pkl file
             save_object(
                 file_path = self.data_transformation_config.preprocessor_data_path,
                 object = preprocessor_obj
             )
+            logging.info('Ending Data Transformation')
 
+            # returning train_arr, test)arr and preprocessor object path
             return (train_arr, test_arr, self.data_transformation_config.preprocessor_data_path)
         
         except Exception as e:

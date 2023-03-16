@@ -4,6 +4,7 @@ import pandas as pd
 
 from src.logger import logging
 from src.exception import CustomException
+from src.components.model_trainer import ModelTrainer, ModelTrainerConfig 
 from src.components.data_transformation import DataTransformation, DataTransformationConfig
 from dataclasses import dataclass
 from sklearn.model_selection import train_test_split
@@ -20,13 +21,16 @@ class DataIngestion:
         self.ingestion_config = DataIngestionConfig()
     
     def initiate_data_ingestion(self):
-        logging.info('Entered into the data Ingestion method')
+        logging.info('Starting Data Ingestion')
         try:
+            # reading data from directry 
             data = pd.read_csv('notebook/data/stud.csv')
             logging.info('Read the data as dataframe')
 
+            # creating target column( taking avg. of all marks) 
             data['target'] = round((data['math_score'] + data['reading_score'] + data['writing_score'])/3, 3)
 
+            # saving data to the directary
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
             data.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
 
@@ -36,8 +40,9 @@ class DataIngestion:
             train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)
 
-            logging.info('Data Ingestion completed')
+            logging.info('Ending Data Ingestion')
 
+            #returning data path
             return self.ingestion_config.train_data_path, self.ingestion_config.test_data_path, self.ingestion_config.raw_data_path
 
         except Exception as e:
@@ -48,6 +53,10 @@ class DataIngestion:
 if __name__ == '__main__':
     obj = DataIngestion()
     train_data, test_data, _ = obj.initiate_data_ingestion()
+
     data_trans = DataTransformation()
-    data_trans.initiate_data_transformation(train_data, test_data)
-            
+    train_arr,test_arr, _ =  data_trans.initiate_data_transformation(train_data, test_data)
+
+    model_trainer = ModelTrainer()
+    r2_score, model_name = model_trainer.initiate_model_trainer(train_arr, test_arr)
+    print('Model = ',model_name,' ', 'r2_score = ',r2_score)
