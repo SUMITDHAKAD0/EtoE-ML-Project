@@ -1,9 +1,10 @@
-pandas
-numpy
+# pandas
+# numpy
 # seaborn
 # matplotlib
 # scikit-learn
 # catboost
 # xgboost
 # dill
+# Flask
 -e .

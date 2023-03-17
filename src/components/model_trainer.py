@@ -49,13 +49,13 @@ class ModelTrainer:
                 "Gradient Boosting": GradientBoostingRegressor(),
                 "Linear Regression": LinearRegression(),
                 "K-Neighbors Classifier": KNeighborsRegressor(),
-                "XGBClassifier": XGBRegressor(),
-                "CatBoosting Classifier": CatBoostRegressor(verbose=False),
-                "AdaBoost Classifier": AdaBoostRegressor(),
+                "XGBRegressor": XGBRegressor(),
+                "CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                "AdaBoost Regressor": AdaBoostRegressor(),
             }
 
             # Initialize hyperparameters for all models
-            params={
+            params = {
                 "Decision Tree": {
                     'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
                     # 'splitter':['best','random'],
@@ -76,6 +76,7 @@ class ModelTrainer:
                     'n_estimators': [8,16,32,64,128,256]
                 },
                 "Linear Regression":{},
+                "K-Neighbors Classifier":{},
                 "XGBRegressor":{
                     'learning_rate':[.1,.01,.05,.001],
                     'n_estimators': [8,16,32,64,128,256]
@@ -89,8 +90,7 @@ class ModelTrainer:
                     'learning_rate':[.1,.01,0.5,.001],
                     # 'loss':['linear','square','exponential'],
                     'n_estimators': [8,16,32,64,128,256]
-                }
-                
+                }     
             }
 
             # calling model training function 
@@ -100,7 +100,8 @@ class ModelTrainer:
                 x_test = x_test, 
                 y_test = y_test, 
                 models = models,
-                params = params)
+                params = params
+            )
 
             #saving model report
             os.makedirs(os.path.dirname(self.model_trainer_config.trained_model_report), exist_ok=True)

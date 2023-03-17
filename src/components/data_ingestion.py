@@ -28,7 +28,7 @@ class DataIngestion:
             logging.info('Read the data as dataframe')
 
             # creating target column( taking avg. of all marks) 
-            data['target'] = round((data['math_score'] + data['reading_score'] + data['writing_score'])/3, 3)
+            # data['target'] = round((data['math_score'] + data['reading_score'] + data['writing_score'])/3, 3)
 
             # saving data to the directary
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)

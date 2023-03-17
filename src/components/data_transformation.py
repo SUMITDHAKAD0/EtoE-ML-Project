@@ -24,7 +24,7 @@ class DataTransformation:
     def get_data_transformer_object(self):
         try:
             # initializing numeric and categorical columns in a list
-            numerical_features = ['math_score', 'reading_score', 'writing_score']
+            numerical_features = ['reading_score', 'writing_score']
             categorical_features = ['gender', 'race_ethnicity', 'parental_level_of_education', 'lunch', 'test_preparation_course']
 
             # creating pipeline for numeric coluns
@@ -80,7 +80,7 @@ class DataTransformation:
             preprocessor_obj = self.get_data_transformer_object()
 
             # initializing target column
-            target_column = 'target'
+            target_column = 'math_score'
 
             x_train = train_df.drop(target_column, axis=1)
             y_train = train_df[target_column]
